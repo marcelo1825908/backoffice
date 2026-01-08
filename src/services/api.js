@@ -60,5 +60,26 @@ export const getRentalChargeById = (id) => api.get(`/rental-charges/${id}`);
 export const getRentalBookings = () => api.get('/rental-bookings');
 export const getRentalBookingById = (id) => api.get(`/rental-bookings/${id}`);
 
+// Authentication API
+export const login = (credentials) => api.post('/auth/login', credentials);
+export const register = (userData) => api.post('/auth/register', userData);
+export const updateProfile = (userData) => api.put('/auth/profile', userData);
+export const changePassword = (passwordData) => api.put('/auth/password', passwordData);
+export const logout = () => {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+};
+
+// Set auth token for authenticated requests
+export const setAuthToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    localStorage.setItem('authToken', token);
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+    localStorage.removeItem('authToken');
+  }
+};
+
 export default api;
 

@@ -319,6 +319,81 @@ const Members = () => {
     }
   };
 
+  // Handle Import Members
+  const handleImportMembers = () => {
+    // Create a hidden file input element
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.csv,.xlsx,.xls';
+    fileInput.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        // Read file content
+        const text = await file.text();
+        // Parse CSV (basic implementation)
+        const lines = text.split('\n').filter(line => line.trim());
+        const headers = lines[0].split(',').map(h => h.trim());
+        
+        // Find column indices
+        const nameIndex = headers.findIndex(h => h.toLowerCase().includes('name'));
+        const phoneIndex = headers.findIndex(h => h.toLowerCase().includes('phone'));
+        const idIndex = headers.findIndex(h => h.toLowerCase().includes('id') || h.toLowerCase().includes('member'));
+
+        if (nameIndex === -1) {
+          setToast({ show: true, message: 'CSV must contain a "name" column', type: 'error' });
+          return;
+        }
+
+        let imported = 0;
+        let errors = 0;
+
+        // Process each row (skip header)
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim());
+          const name = values[nameIndex] || '';
+          const phone = values[phoneIndex] || '';
+          const memberId = values[idIndex] || '';
+
+          if (!name) continue;
+
+          try {
+            // Get next member ID if not provided
+            let finalMemberId = memberId;
+            if (!finalMemberId) {
+              const nextIdResponse = await getNextMemberId();
+              finalMemberId = nextIdResponse.data?.nextId || String(members.length + 1 + i).padStart(4, '0');
+            }
+
+            await createMember({
+              member_id: finalMemberId,
+              full_name: name,
+              phone: phone
+            });
+            imported++;
+          } catch (err) {
+            errors++;
+            console.error(`Error importing member ${name}:`, err);
+          }
+        }
+
+        setToast({ 
+          show: true, 
+          message: `Imported ${imported} member(s)${errors > 0 ? `. ${errors} error(s)` : ''}`, 
+          type: imported > 0 ? 'success' : 'error' 
+        });
+        
+        // Refresh members list
+        fetchMembers();
+      } catch (error) {
+        setToast({ show: true, message: 'Failed to import members. Please check file format.', type: 'error' });
+        console.error('Import error:', error);
+      }
+    };
+    fileInput.click();
+  };
+
   // Handle Add Member
   const handleAddMember = async () => {
     setEditingMember(null);
@@ -506,6 +581,16 @@ const Members = () => {
                       className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors shadow-md hover:shadow-lg"
                     >
                       Search
+                    </button>
+                    <button
+                      onClick={handleImportMembers}
+                      className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl transition-colors duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
+                      title="Import Members from CSV"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                      <span>Import</span>
                     </button>
                     <button
                       onClick={handleAddMember}

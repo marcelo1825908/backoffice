@@ -1,19 +1,34 @@
 import axios from 'axios';
 
-// Get API URL - use fixed backend server IP address
+// Get API URL from localStorage or use default
 const getAPIBaseURL = () => {
-  // Use fixed backend server IP address
+  // Get server URL from localStorage (set by ServerUrlModal)
+  const serverUrl = localStorage.getItem('serverUrl');
+  if (serverUrl) {
+    return `${serverUrl}/api`;
+  }
+  // Default fallback (will be overridden when user sets server URL)
   return 'http://192.168.124.44:5000/api';
 };
 
-const API_BASE_URL = getAPIBaseURL();
+// Create a function to get the current API base URL dynamically
+export const getCurrentAPIBaseURL = () => {
+  return getAPIBaseURL();
+};
 
+// Create axios instance - baseURL will be updated dynamically
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getAPIBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+// Function to update the API base URL
+export const updateAPIBaseURL = (serverUrl) => {
+  const apiUrl = serverUrl.endsWith('/api') ? serverUrl : `${serverUrl}/api`;
+  api.defaults.baseURL = apiUrl;
+};
 
 // Mosque Payments API (payments made at the kiosk)
 export const getMosquePayments = () => api.get('/mosque/payments');

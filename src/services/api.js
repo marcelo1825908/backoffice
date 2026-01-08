@@ -1,11 +1,7 @@
 import axios from 'axios';
 
-// Get API URL from window variable (injected by Electron) or environment variable, or fallback to localhost
+// Get API URL from environment variable or fallback to localhost
 const getAPIBaseURL = () => {
-  // In Electron app, use the injected API URL
-  if (window.__API_BASE_URL__) {
-    return window.__API_BASE_URL__;
-  }
   // In development or if env var is set, use that
   if (process.env.REACT_APP_API_URL) {
     return process.env.REACT_APP_API_URL;

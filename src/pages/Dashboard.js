@@ -158,7 +158,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="bg-pos-bg-primary pt-[200px]">
+    <div className="bg-pos-bg-primary pt-16">
       <div className="flex flex-col">
         {/* Header */}
         <div className="w-[80%] mx-auto border-2 border-pos-border-primary rounded-3xl overflow-hidden shadow-2xl mb-8">

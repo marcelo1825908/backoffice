@@ -466,21 +466,12 @@ const Members = () => {
   };
 
   return (
-    <div className="bg-pos-bg-primary pt-[200px]">
+    <div className="bg-pos-bg-primary pt-16">
       <div className="flex flex-col">
         {/* Header */}
         <div className="w-[80%] mx-auto border-2 border-pos-border-primary rounded-3xl overflow-hidden shadow-2xl mb-8">
           <div className="p-5 border-2 border-pos-border-secondary rounded-2xl m-5 bg-pos-bg-secondary">
             <div className="flex items-center justify-between">
-              <button
-                onClick={() => navigate('/')}
-                className="p-3 bg-rose-500 hover:bg-rose-600 rounded-xl transition-colors duration-200 flex items-center justify-center shadow-md hover:shadow-lg"
-                title="Go Back"
-              >
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                </svg>
-              </button>
               <div className="flex-1 text-center">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-pos-text-primary">Members</h1>
                 <p className="text-pos-text-secondary mt-1">View all members and their payment status</p>

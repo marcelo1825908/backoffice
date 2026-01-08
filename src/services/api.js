@@ -1,13 +1,9 @@
 import axios from 'axios';
 
-// Get API URL from environment variable or fallback to localhost
+// Get API URL - use fixed backend server IP address
 const getAPIBaseURL = () => {
-  // In development or if env var is set, use that
-  if (process.env.REACT_APP_API_URL) {
-    return process.env.REACT_APP_API_URL;
-  }
-  // Fallback to localhost
-  return 'http://localhost:5000/api';
+  // Use fixed backend server IP address
+  return 'http://192.168.124.44:5000/api';
 };
 
 const API_BASE_URL = getAPIBaseURL();

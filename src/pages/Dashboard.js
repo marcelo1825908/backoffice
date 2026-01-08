@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMosquePayments, getMosquePaymentStatsByType, getMosquePaymentStatsByMethod } from '../services/api';
 import Skeleton, { SkeletonTable } from '../components/Skeleton';
+import Header from '../components/Header';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -158,34 +159,9 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="bg-pos-bg-primary pt-16">
+    <div className="bg-pos-bg-primary">
+      <Header title="Tableau de bord | Dashboard | Dashboard | لوحة التحكم" subtitle="Monitor and manage kiosk payments" />
       <div className="flex flex-col">
-        {/* Header */}
-        <div className="w-[80%] mx-auto border-2 border-pos-border-primary rounded-3xl overflow-hidden shadow-2xl mb-8">
-          <div className="p-5 border-2 border-pos-border-secondary rounded-2xl m-5 bg-pos-bg-secondary">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-pos-text-primary">Church Office Panel</h1>
-                <p className="text-pos-text-secondary mt-1">Monitor and manage kiosk payments</p>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => navigate('/payments')}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors shadow-md hover:shadow-lg"
-                >
-                  View All Payments
-                </button>
-                <button
-                  onClick={() => navigate('/members')}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-colors shadow-md hover:shadow-lg"
-                >
-                  Members
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Main Content */}
         <div className="flex-1 overflow-hidden pb-4">
           <div className="w-[90%] mx-auto border-2 border-pos-border-primary rounded-3xl overflow-hidden shadow-2xl mb-6">

@@ -13,23 +13,27 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className=" z-50 flex justify-center pb-4">
-      <div className="w-[90%] py-5 bg-pos-bg-secondary border-t-2 border-pos-border-primary shadow-2xl rounded-3xl">
-        <div className="flex justify-around items-center h-16 px-4">
+    <nav className="fixed left-0 top-0 h-full w-64 bg-pos-bg-secondary border-r-2 border-pos-border-primary shadow-2xl z-50">
+      <div className="flex flex-col h-full py-6">
+        <div className="px-6 mb-8">
+          <h1 className="text-2xl font-bold text-pos-text-primary">Backoffice</h1>
+          <p className="text-sm text-pos-text-secondary mt-1">POS System</p>
+        </div>
+        <div className="flex flex-col space-y-2 px-4">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={`flex flex-col items-center justify-center px-4 py-2 rounded-xl transition-colors ${
+                className={`flex items-center px-4 py-3 rounded-xl transition-colors ${
                   isActive
-                    ? 'text-blue-400 bg-pos-bg-primary border-2 border-pos-border-primary'
+                    ? 'text-blue-400 bg-pos-bg-primary border-2 border-pos-border-primary shadow-lg'
                     : 'text-pos-text-secondary hover:text-blue-400 hover:bg-pos-bg-primary'
                 }`}
               >
                 <svg
-                  className="w-6 h-6 mb-1"
+                  className="w-6 h-6 mr-3"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -41,7 +45,7 @@ const Navigation = () => {
                     d={item.icon}
                   />
                 </svg>
-                <span className="text-xs font-medium">{item.label}</span>
+                <span className="text-sm font-medium">{item.label}</span>
               </button>
             );
           })}

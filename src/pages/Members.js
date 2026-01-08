@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getMembers, getMosquePaymentsByMemberId, searchMembers, createMember, updateMember, deleteMember, getNextMemberId } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { SkeletonTable } from '../components/Skeleton';
 import VirtualKeyboard from '../components/VirtualKeyboard';
 import Toast from '../components/Toast';
+import Header from '../components/Header';
 
 const Members = () => {
-  const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState(null);
   const [showMemberModal, setShowMemberModal] = useState(false);
   const [memberPayments, setMemberPayments] = useState([]);
+  const [paymentHistoryPage, setPaymentHistoryPage] = useState(1);
+  const paymentHistoryItemsPerPage = 5;
   const [searchQuery, setSearchQuery] = useState('');
   const [activeField, setActiveField] = useState(null);
   const [keyboardPosition, setKeyboardPosition] = useState({ top: 0, left: 0, width: 0 });
@@ -229,6 +230,7 @@ const Members = () => {
       }
 
       setMemberPayments(payments);
+      setPaymentHistoryPage(1); // Reset to first page when opening modal
       setShowMemberModal(true);
     } catch (error) {
       console.error('Error fetching member payments:', error);
@@ -466,29 +468,9 @@ const Members = () => {
   };
 
   return (
-    <div className="bg-pos-bg-primary pt-16">
+    <div className="bg-pos-bg-primary">
+      <Header title="Leden | Members | Membres | الأعضاء" subtitle="View all members and their payment status" />
       <div className="flex flex-col">
-        {/* Header */}
-        <div className="w-[80%] mx-auto border-2 border-pos-border-primary rounded-3xl overflow-hidden shadow-2xl mb-8">
-          <div className="p-5 border-2 border-pos-border-secondary rounded-2xl m-5 bg-pos-bg-secondary">
-            <div className="flex items-center justify-between">
-              <div className="flex-1 text-center">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-pos-text-primary">Members</h1>
-                <p className="text-pos-text-secondary mt-1">View all members and their payment status</p>
-              </div>
-              <button
-                onClick={handleAddMember}
-                className="p-3 bg-green-600 hover:bg-green-700 rounded-xl transition-colors duration-200 flex items-center justify-center shadow-md hover:shadow-lg"
-                title="Add New Member"
-              >
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Main Content */}
         <div className="flex-1 overflow-hidden pb-4">
           <div className="w-[90%] mx-auto border-2 border-pos-border-primary rounded-3xl overflow-hidden shadow-2xl mb-6">
@@ -515,7 +497,7 @@ const Members = () => {
                       className="w-full px-4 py-2 border-2 border-pos-border-primary rounded-xl bg-pos-bg-secondary text-pos-text-primary focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
-                  <div className="flex items-end">
+                  <div className="flex items-end gap-3">
                     <button
                       onClick={() => {
                         setCurrentPage(1); // Reset to first page on search
@@ -524,6 +506,16 @@ const Members = () => {
                       className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors shadow-md hover:shadow-lg"
                     >
                       Search
+                    </button>
+                    <button
+                      onClick={handleAddMember}
+                      className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-colors duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
+                      title="Add New Member"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                      <span>Add Member</span>
                     </button>
                   </div>
                 </div>
@@ -716,7 +708,7 @@ const Members = () => {
                   {/* Member Info */}
                   <div>
                     <h3 className="text-lg font-bold text-pos-text-primary mb-4">Member Information</h3>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                       <div>
                         <p className="text-sm text-pos-text-secondary">Member ID</p>
                         <p className="font-semibold text-pos-text-primary">{selectedMember.member_id || `#${selectedMember.id}`}</p>
@@ -724,10 +716,6 @@ const Members = () => {
                       <div>
                         <p className="text-sm text-pos-text-secondary">Phone</p>
                         <p className="font-semibold text-pos-text-primary">{selectedMember.phone || 'N/A'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-pos-text-secondary">Email</p>
-                        <p className="font-semibold text-pos-text-primary">{selectedMember.email || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-sm text-pos-text-secondary">Total Payments</p>
@@ -748,19 +736,88 @@ const Members = () => {
                     {memberPayments.length === 0 ? (
                       <PaymentEmptyState message="No payments found" />
                     ) : (
-                      <div className="space-y-2">
-                        {memberPayments.map((payment) => (
-                          <div key={payment.id} className="bg-pos-bg-primary border-2 border-pos-border-primary rounded-xl p-4">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <p className="font-semibold text-pos-text-primary">{formatDate(payment.created_at)}</p>
-                                <p className="text-sm text-pos-text-secondary">{payment.payment_type} - {payment.payment_method}</p>
+                      <>
+                        {/* Paginated Payments */}
+                        <div className="space-y-2 mb-4">
+                          {memberPayments
+                            .slice(
+                              (paymentHistoryPage - 1) * paymentHistoryItemsPerPage,
+                              paymentHistoryPage * paymentHistoryItemsPerPage
+                            )
+                            .map((payment) => (
+                              <div key={payment.id} className="bg-pos-bg-primary border-2 border-pos-border-primary rounded-xl p-4">
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <p className="font-semibold text-pos-text-primary">{formatDate(payment.created_at)}</p>
+                                    <p className="text-sm text-pos-text-secondary">{payment.payment_type} - {payment.payment_method}</p>
+                                  </div>
+                                  <p className="text-lg font-bold text-pos-text-primary">{formatCurrency(parseFloat(payment.amount) || 0)}</p>
+                                </div>
                               </div>
-                              <p className="text-lg font-bold text-pos-text-primary">{formatCurrency(parseFloat(payment.amount) || 0)}</p>
+                            ))}
+                        </div>
+                        
+                        {/* Pagination Controls */}
+                        {memberPayments.length > paymentHistoryItemsPerPage && (
+                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-pos-border-secondary">
+                            <div className="text-sm text-pos-text-secondary">
+                              Showing {((paymentHistoryPage - 1) * paymentHistoryItemsPerPage) + 1} to {Math.min(paymentHistoryPage * paymentHistoryItemsPerPage, memberPayments.length)} of {memberPayments.length} payments
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => setPaymentHistoryPage(prev => Math.max(1, prev - 1))}
+                                disabled={paymentHistoryPage === 1}
+                                className={`px-4 py-2 rounded-xl transition-colors ${
+                                  paymentHistoryPage === 1
+                                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                }`}
+                              >
+                                Previous
+                              </button>
+                              <div className="flex items-center gap-1">
+                                {Array.from({ length: Math.ceil(memberPayments.length / paymentHistoryItemsPerPage) }, (_, i) => i + 1).map((page) => {
+                                  const totalPages = Math.ceil(memberPayments.length / paymentHistoryItemsPerPage);
+                                  // Show first page, last page, current page, and pages around current
+                                  if (
+                                    page === 1 ||
+                                    page === totalPages ||
+                                    (page >= paymentHistoryPage - 1 && page <= paymentHistoryPage + 1)
+                                  ) {
+                                    return (
+                                      <button
+                                        key={page}
+                                        onClick={() => setPaymentHistoryPage(page)}
+                                        className={`px-3 py-2 rounded-xl transition-colors ${
+                                          paymentHistoryPage === page
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                                        }`}
+                                      >
+                                        {page}
+                                      </button>
+                                    );
+                                  } else if (page === paymentHistoryPage - 2 || page === paymentHistoryPage + 2) {
+                                    return <span key={page} className="px-2 text-pos-text-secondary">...</span>;
+                                  }
+                                  return null;
+                                })}
+                              </div>
+                              <button
+                                onClick={() => setPaymentHistoryPage(prev => Math.min(Math.ceil(memberPayments.length / paymentHistoryItemsPerPage), prev + 1))}
+                                disabled={paymentHistoryPage >= Math.ceil(memberPayments.length / paymentHistoryItemsPerPage)}
+                                className={`px-4 py-2 rounded-xl transition-colors ${
+                                  paymentHistoryPage >= Math.ceil(memberPayments.length / paymentHistoryItemsPerPage)
+                                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                }`}
+                              >
+                                Next
+                              </button>
                             </div>
                           </div>
-                        ))}
-                      </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

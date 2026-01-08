@@ -15,16 +15,17 @@ function App() {
         v7_relativeSplatPath: true,
       }}
     >
-      <div>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/payments" element={<Payments />} />
-          {/* <Route path="/mosque" element={<Payments />} /> */}
-          <Route path="/members" element={<Members />} />
-          <Route path="/reports" element={<Reports />} />
-        </Routes>
+      <div className="flex h-screen overflow-hidden">
         <Navigation />
+        <main className="flex-1 overflow-y-auto ml-64">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/members" element={<Members />} />
+            <Route path="/reports" element={<Reports />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   );

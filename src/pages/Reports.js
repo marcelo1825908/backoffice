@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getMosquePaymentStatsByType, getMosquePaymentStatsByMethod, getMosquePayments } from '../services/api';
 import Skeleton, { SkeletonTable } from '../components/Skeleton';
 import CustomDatePicker from '../components/CustomDatePicker';
+import Header from '../components/Header';
 import {
   PieChart,
   Pie,
@@ -20,7 +20,6 @@ import {
 } from 'recharts';
 
 const Reports = () => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   
   const [dateRange, setDateRange] = useState({
@@ -253,20 +252,9 @@ const Reports = () => {
   );
 
   return (
-    <div className="bg-pos-bg-primary pt-16">
+    <div className="bg-pos-bg-primary">
+      <Header title="Rapports | Reports | Rapportages | التقارير" subtitle="Payment statistics and reports" />
       <div className="flex flex-col">
-        {/* Header */}
-        <div className="w-[80%] mx-auto border-2 border-pos-border-primary rounded-3xl overflow-hidden shadow-2xl mb-8">
-          <div className="p-5 border-2 border-pos-border-secondary rounded-2xl m-5 bg-pos-bg-secondary">
-            <div className="flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-pos-text-primary">Reports</h1>
-                <p className="text-pos-text-secondary mt-1">Payment statistics and reports</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Main Content */}
         <div className="flex-1 overflow-hidden pb-4">
           <div className="w-[90%] mx-auto border-2 border-pos-border-primary rounded-3xl overflow-hidden shadow-2xl mb-6">

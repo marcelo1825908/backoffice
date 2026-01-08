@@ -119,7 +119,7 @@ const ServerUrlModal = ({ onConnectionSuccess }) => {
               disabled={testing || success || !serverUrl.trim()}
               className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
             >
-              {testing ? 'Testing Connection...' : success ? 'Connected!' : 'Test Connection'}
+              {testing ? 'Testing Connection...' : success ? 'Connected!' : 'Connection'}
             </button>
           </div>
         </div>

@@ -8,7 +8,7 @@ const getAPIBaseURL = () => {
     return `${serverUrl}/api`;
   }
   // Default fallback (will be overridden when user sets server URL)
-  return 'http://192.168.124.44:5000/api';
+  // return 'http://192.168.124.44:5000/api';
 };
 
 // Create a function to get the current API base URL dynamically

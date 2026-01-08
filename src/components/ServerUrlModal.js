@@ -93,12 +93,12 @@ const ServerUrlModal = ({ onConnectionSuccess }) => {
                   setSuccess(false);
                 }}
                 onKeyPress={handleKeyPress}
-                placeholder="192.168.124.44:5000 or http://192.168.124.44:5000"
+                placeholder="192.168.1.1:5000 or http://192.168.1.1:5000"
                 className="w-full px-4 py-2 border-2 border-pos-border-primary rounded-xl bg-pos-bg-primary text-pos-text-primary focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 disabled={testing || success}
               />
               <p className="text-xs text-pos-text-secondary mt-1">
-                Example: 192.168.124.44:5000 or http://192.168.124.44:5000
+                Example: 192.168.1.1:5000 or http://192.168.1.1:5000
               </p>
             </div>
 
